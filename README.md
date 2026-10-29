@@ -6,7 +6,7 @@ The restoration tools work on a small area at a time, so a whole vehicle takes m
 
 ## Features
 
-- **Brush size on the mouse wheel**: snap the Polisher, Grinder, or Cleaning Sponge to a surface and turn the wheel (LB and RB on a gamepad) to resize the brush, up to 5x. With no tool snapped, the wheel changes the hotbar as usual. The size resets when you put the tool away.
+- **Brush size on the mouse wheel or gamepad**: snap the Polisher, Grinder, or Cleaning Sponge to a surface and turn the mouse wheel or press LB and RB on a gamepad to resize the brush, up to 5x. With no tool snapped, the wheel changes the hotbar as usual. The size resets when you put the tool away.
 - **Brush preview**: while the tool is snapped, a ring on the surface shows the brush size, in the same style as the Spray Paint ring.
 - **Bigger Spray Paint brush**: the Spray Paint keeps the game's Brush Size control and gets extra sizes above its largest one, up to 4x with the default settings (8x with a max size of 10).
 - **Pay for the work, not the time**: the Polisher, Grinder, and Spray Paint drain only for surface they change, at half the game's cost by default. Finished surface and a tool in the air cost nothing. The Cleaning Sponge drains by brush area instead.
