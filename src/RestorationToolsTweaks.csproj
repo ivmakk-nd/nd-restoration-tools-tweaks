@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Build settings and the common game references live in Directory.Build.props above this folder.
+       This file names the plugin and adds the game assemblies that only this mod uses. -->
+  <PropertyGroup>
+    <AssemblyName>RestorationToolsTweaks</AssemblyName>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(GameManaged)\Mirror.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameManaged)\PaintCore.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameManaged)\PaintIn3D.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameManaged)\CW.Common.dll"><Private>false</Private></Reference>
+    <Reference Include="$(GameManaged)\UnityEngine.PhysicsModule.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+
+</Project>
