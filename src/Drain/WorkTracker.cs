@@ -42,12 +42,15 @@ namespace RestorationToolsTweaks
         private static readonly List<Panel> ActivePanels = new List<Panel>();
         private static readonly ConditionalWeakTable<object, ToolTouch> Touches = new ConditionalWeakTable<object, ToolTouch>();
         private static readonly Collider[] Hits = new Collider[8];
+        // The game's resolver of a hit frame: a world frame passes with no space, and it keeps the last panel.
+        private static readonly RestorationHitSpace HitSpace = new RestorationHitSpace();
         private static readonly HashSet<System.Type> LoggedRates = new HashSet<System.Type>();
         private static float _nextTick;
 
         // Called on the host for each relayed hit. Finds the panel under the hit at most every 0.25 s for each tool.
         // Only work drain reads masks; Verbose also reads them, for the calibration of a tool's cost.
-        internal static void Touch(object tool, WorkMask mask, Vector3 position)
+        // `position` is local to the panel of `frame`, or world when the frame is a world frame.
+        internal static void Touch(object tool, WorkMask mask, RestorationHitFrame frame, Vector3 position)
         {
             if (Plugin.Drain.Value != DrainMode.Work && !Plugin.Verbose.Value)
             {
@@ -60,7 +63,14 @@ namespace RestorationToolsTweaks
             }
             touch.NextTouch = Time.time + TouchInterval;
             LogGameRate(tool);
-            RestorableVehicleSurface surface = FindSurface(position);
+            // A world frame resolves to no space, and its position is already world.
+            if (!HitSpace.TryResolve(in frame, out Transform space))
+            {
+                return;
+            }
+            // A panel frame names the panel itself. A loose part has no collider at its paint area, so only a
+            // world frame needs the physics search.
+            RestorableVehicleSurface surface = space != null ? space.GetComponent<RestorableVehicleSurface>() : FindSurface(position);
             if (surface == null)
             {
                 return;
@@ -69,6 +79,10 @@ namespace RestorationToolsTweaks
             {
                 panel = new Panel { Surface = surface, Area = float.NaN };
                 Panels.Add(surface, panel);
+                if (Plugin.Verbose.Value)
+                {
+                    Plugin.Log.LogDebug($"RestorationToolsTweaks: {tool.GetType().Name} touched panel {surface.name} at {RestorationHitFrame.ToWorldPoint(space, position)}");
+                }
             }
             int i = (int)mask;
             panel.LastTouched[i] = Time.time;

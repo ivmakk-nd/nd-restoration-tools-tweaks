@@ -1,0 +1,5 @@
+v1.0.1 - 2026-11-02
+Removed: Support for the game before its update of 1 November 2026.
+Fixed: The mod works again after the game update of 1 November 2026. The brush size, the ring, the extra Spray Paint sizes, and the drain settings work again.
+Fixed: In work drain, the Polisher, Grinder, and Spray Paint drain on a loose part that is not on a vehicle.
+Fixed: When a game update breaks only the drain settings, the brush size, the ring, and the extra Spray Paint sizes keep working.

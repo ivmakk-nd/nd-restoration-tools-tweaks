@@ -7,14 +7,15 @@ using NomadDrive.Features.Tools;
 namespace RestorationToolsTweaks
 {
     // The [Command] bodies of the hit relay run on the host, also for the host's own tool, with the
-    // radius the owner sent. The host reads the brush scale of each tool from them.
+    // radius the owner sent. The host reads the brush scale of each tool from them. The position is
+    // local to the panel of the frame; WorkTracker.Touch turns it into world space.
     [HarmonyPatch]
     internal static class ReadScaleOnRelayedHit
     {
         private static IEnumerable<System.Reflection.MethodBase> TargetMethods()
         {
-            const string point = "UserCode_CmdRelayHitPoint__Vector3__Quaternion__Single__Int32__Int32__Single__Single";
-            const string line = "UserCode_CmdRelayHitLine__Vector3__Vector3__Quaternion__Single__Int32__Boolean__Int32__Single__Single";
+            const string point = "UserCode_CmdRelayFrameHitPoint__RestorationHitFrame__Vector3__Quaternion__Single__Int32__Int32__Single__Single";
+            const string line = "UserCode_CmdRelayFrameHitLine__RestorationHitFrame__Vector3__Vector3__Quaternion__Single__Int32__Boolean__Int32__Single__Single";
             foreach (Type type in new[] { typeof(RestorationTool), typeof(CleanTool) })
             {
                 foreach (string name in new[] { point, line })
@@ -29,7 +30,7 @@ namespace RestorationToolsTweaks
             }
         }
 
-        private static void Postfix(object __instance, UnityEngine.Vector3 position, float radius)
+        private static void Postfix(object __instance, RestorationHitFrame frame, UnityEngine.Vector3 position, float radius)
         {
             try
             {
@@ -42,15 +43,15 @@ namespace RestorationToolsTweaks
                 }
                 if (__instance is CleanTool)
                 {
-                    WorkTracker.Touch(__instance, WorkMask.Dirt, position);
+                    WorkTracker.Touch(__instance, WorkMask.Dirt, frame, position);
                 }
                 else if (__instance is GrinderTool)
                 {
-                    WorkTracker.Touch(__instance, WorkMask.Rust, position);
+                    WorkTracker.Touch(__instance, WorkMask.Rust, frame, position);
                 }
                 else if (__instance is PolishTool)
                 {
-                    WorkTracker.Touch(__instance, WorkMask.Polish, position);
+                    WorkTracker.Touch(__instance, WorkMask.Polish, frame, position);
                 }
                 float scale = BrushScaleLogic.ScaleFromRadius(radius, state.VanillaBrushRadius);
                 if (scale != state.HostScale)
@@ -165,8 +166,8 @@ namespace RestorationToolsTweaks
         {
             foreach (string name in new[]
             {
-                "UserCode_CmdRelayHitPoint__Vector3__Quaternion__Single__Int32__Int32__Byte",
-                "UserCode_CmdRelayHitLine__Vector3__Vector3__Quaternion__Single__Int32__Boolean__Int32__Byte",
+                "UserCode_CmdRelayFrameHitPoint__RestorationHitFrame__Vector3__Quaternion__Single__Int32__Int32__Byte",
+                "UserCode_CmdRelayFrameHitLine__RestorationHitFrame__Vector3__Vector3__Quaternion__Single__Int32__Boolean__Int32__Byte",
             })
             {
                 System.Reflection.MethodInfo method = AccessTools.Method(typeof(PaintSprayTool), name);
@@ -178,11 +179,11 @@ namespace RestorationToolsTweaks
             }
         }
 
-        private static void Postfix(PaintSprayTool __instance, UnityEngine.Vector3 position)
+        private static void Postfix(PaintSprayTool __instance, RestorationHitFrame frame, UnityEngine.Vector3 position)
         {
             try
             {
-                WorkTracker.Touch(__instance, WorkMask.Paint, position);
+                WorkTracker.Touch(__instance, WorkMask.Paint, frame, position);
             }
             catch (Exception e)
             {
