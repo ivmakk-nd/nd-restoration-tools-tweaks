@@ -22,7 +22,7 @@ The mod stores nothing in your save, so you can remove it at any time.
 
 ## Requirements
 
-- Nomad Drive (Early Access), the update of 1 November 2026 or later.
+- Nomad Drive 1.0.1 or later. The demo is not supported.
 - [Nomad Drive BepInEx Pack](https://www.nexusmods.com/nomaddrive/mods/7).
 
 ## Installation
